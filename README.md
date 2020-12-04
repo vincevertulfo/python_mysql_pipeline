@@ -1,4 +1,4 @@
-# Dockerized Python-MySQL Data Pipeline
+# Containerized Python-MySQL Data Pipeline
 
 ## About the Project
 
