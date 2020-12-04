@@ -1,5 +1,10 @@
+# Raw data
 data/
 
+# Environment variables
 .env
 
+# Pycache
 etl_scripts/*/
+
+

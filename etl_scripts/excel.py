@@ -2,10 +2,8 @@ import pandas as pd
 import os
 import xlrd
 
-from .reference import *
+from .reference import excel_event_columns, excel_brand_columns
 
-FILE_PATH = '../data'
-info_type = 'brand'
 
 def consolidate_excel(FILE_PATH, info_type):
   '''
@@ -22,13 +20,13 @@ def consolidate_excel(FILE_PATH, info_type):
     ----------
     main_df : dataframe
       Output dataframe with all Excel files consolidated
-
   '''
 
+  print(f"Consolidating for Excel's {info_type} data...")
   column_mapper = excel_event_columns if info_type == 'event' else excel_brand_columns
   sheet_name = 'Event Info Form' if info_type == 'event' else 'Brand Audit Form'
 
-  i = 1
+  submission_id = 1
   dfs = []
   no_brand_audit = []
   for file in os.listdir(FILE_PATH):
@@ -49,10 +47,10 @@ def consolidate_excel(FILE_PATH, info_type):
     df = df.dropna(how='all') 
     df['File Name'] = str(file)
     df['Submission Type'] = 'Excel Template 2020'
-    df['Submission Id'] = i
+    df['Submission Id'] = submission_id
     dfs.append(df)
 
-    i+=1
+    submission_id += 1
 
   main_df = pd.concat(dfs)
   main_df = main_df.rename(columns=column_mapper)

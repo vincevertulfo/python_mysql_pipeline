@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${PASSWORD}
+      MYSQL_DATABASE: ${DB}
+    ports:
+      - '3308:3306'
+    expose:
+      - '3306'
+    volumes:
+      - ".:/etc/mysql/conf.d"
+  python_script:
+    build: .
+    image: python_script:v1
+    restart: on-failure
+    container_name: python_script
+    depends_on:
+      - mysql

@@ -3,19 +3,20 @@ from sqlalchemy import Column, Float, Integer, String, DateTime, Boolean, Text, 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
+import time
 
-from utilities import *
+from utilities.utils import get_db_credentials
+import config
 
 host, user, password, db, port = get_db_credentials()
-
-engine = create_engine(f'mysql+mysqlconnector://{host}:{password}@{host}:{port}/{db}',
+engine = create_engine(f'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db}',
                       pool_recycle=int(port), echo=True) # echo=True is to show the SQL statements
 
 Base = declarative_base()
 
 class EventStaging(Base):
-  __tablename__ = 'events_staging'
-  __table_args__ = {'schema': 'bffp_practice'}
+  __tablename__ = config.EVENT_STAGING_TABLE_NAME
+  __table_args__ = {'schema': db}
 
   file_name = Column(Text)
   submission_type = Column(String(200), primary_key=True)
@@ -52,7 +53,7 @@ class EventStaging(Base):
     '''
 
 class BrandStaging(Base):
-  __tablename__ = 'brands_staging'
+  __tablename__ = config.BRAND_STAGING_TABLE_NAME
 
   row_id = Column(Integer, primary_key=True)
   submission_type = Column(String(200))
@@ -70,7 +71,7 @@ class BrandStaging(Base):
   __table_args__ = (
       ForeignKeyConstraint([submission_type, submission_id],
                           [EventStaging.submission_type, EventStaging.submission_id]),
-      {'schema' : 'bffp_practice'}
+      {'schema' : db}
   )
 
   def __repr__(self):
@@ -80,8 +81,15 @@ class BrandStaging(Base):
         type_material={self.type_material}, layer={self.layer}, total_count={self.total_count})>
     '''
 
-Base.metadata.drop_all(bind=engine)   #Drops all the tables in the database
-Base.metadata.create_all(bind=engine) #Creates all the tables in the database
+connected = False
+while not connected:
+  try:
+    print(f"Creating tables to database: {db}")
+    Base.metadata.create_all(bind=engine) #Creates all the tables in the database
+    connected = True
+  except Exception as e:
+    print("Failed to connect to database")
+    time.sleep(10)
 
 
 # session = sessionmaker()
