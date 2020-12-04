@@ -54,7 +54,7 @@ Assuming you have Docker and docker-compose installed,
 
 1. Clone the repository
 2. `cd` to the repository
-3. Create a .env file in the root directory. Inside the .env file, fill this up
+3. Create a .env file in the root directory. Inside the .env file, fill this up (*Note: HOST is set to 'mysql' because that's the name of our service inside the docker-compose file*)
 
      <img src="images/env_variables.PNG" alt="env_variables" width="250"/>
 
@@ -79,7 +79,7 @@ First, let's check if our python script was able to transform the data successfu
 
 4. Type `mysql -uroot -p [db_name_from_your_env_file]`. Then enter the password you've specified on your .env file.
 
-5. Finally, you can type the following mysql commands
+5. Finally, you can type the following mysql commands. (*Note: You might be seeing different values for count since I reduced the dummy data for this repo.*)
 
     <img src="images/mysql_verified.PNG" alt="mysql_verified" width="400"/>
 
